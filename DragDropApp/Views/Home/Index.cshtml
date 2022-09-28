@@ -147,12 +147,35 @@
                 //$(this).addClass("touched");
                 var dt = event.originalEvent.dataTransfer;
                 
-                var v = $(this).attr('id');
+                let IDs = $(this).attr('id');
 
-                var a = v.slice(0,1);
-                var b=v.slice(1);
-                var single = { a, b };
-                SelectList.push(single);
+
+
+                let blockID = IDs.slice(0,1);
+                let serialID = IDs.slice(1);
+
+                let Item = SelectList.find(x => x.BlockID === blockID && x.SerialID === serialID);
+                console.log(Item);
+                if (Item) {
+
+                }
+                else {
+                    let single = { BlockID: blockID, SerialID: serialID };
+                        SelectList.push(single);
+                }
+                for (const x of SelectList) {
+                    if (x.BlockID === blockID && x.SerialID === serialID) {
+                        
+                    }
+                    else {
+                        let single = { BlockID: blockID, SerialID: serialID };
+                        SelectList.push(single);
+                    }
+                }
+
+
+                
+                
                 console.log(SelectList);
                 getIndex();
             });
