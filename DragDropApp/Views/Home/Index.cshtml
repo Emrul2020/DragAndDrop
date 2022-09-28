@@ -1,0 +1,299 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style type="text/css">
+      /*.item {
+          width: 100%;
+          height: 40px;
+          background-color: white;
+          border: 1px solid black;
+          color: black;
+          position: relative;
+          cursor: move;
+          background-color: $dedede;
+      }
+
+      .selected {
+          background-color: #ff9900;
+      }*/
+      /*.ui-droppable{
+          display: inline-block;
+      }
+      .list {
+          display: -webkit-inline-box;
+          height: auto;
+          width: 20%;
+          border: 1px solid yellow;
+          position: absolute;
+          top: 20px;
+          color: white;
+          z-index: 1;
+          margin-bottom:10px;
+      }
+
+
+      #list1 {
+          height:40px;
+          width:50px;
+          padding-bottom:20px;
+      }
+
+      .list-pad{
+          margin-top:20px;
+          padding-bottom:50px;
+          width:auto;
+          height:50px;
+      }*/
+
+      table tr td {
+        padding:0px !important;
+        height: auto;
+        width: auto;
+      }
+
+      .touched{ background-color: #DFFF00; color: white;}
+    .selected { background-color: #DE3163; color: white; }
+
+
+
+      table span {
+        display: block;
+        background-color: green;
+        color:white;
+        height: 20%;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        padding:0.5rem;
+        border:0.1px solid;
+        cursor: move;
+        z-index: 1;
+      }
+
+      .event{
+          draggable="true"
+      }
+</style>
+
+
+
+
+
+<div class="box">
+    <div class="box-body">
+        <div class="row">
+            <div class="col-lg">
+                <table class="table table-striped" id="targetTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>Line/Date</th>
+                            <th>01/09/22</th>
+                            <th>02/09/22</th>
+                            <th>03/09/22</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th><label class="event" id="A1">LineA</label></th>
+                            <td><span class="event" id="a10000" draggable="true">Order A1</span></td>
+                            <td><span class="event" id="a2" draggable="true">Order A2</span></td>
+                            <td><span class="event" id="a3" draggable="true">Order A3</span></td>
+                        </tr>
+                        <tr>
+                            <th><label id="B1">LineB</label></th>
+                            <td><span class="event" id="b1" draggable="true">Order B1</span></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th><label id="C1">LineC</label></th>
+                            <td></td>
+                            <td></td>
+                            <td><span class="event" id="c1" draggable="true">Order C1</span></td>
+                        </tr>
+                        <tr>
+                            <th><label id="D1">LineD</label></th>
+                            <td><span class="event" id="d1" draggable="true">Order D1</span></td>
+                            <td><span class="event" id="d2" draggable="true">Order D2</span></td>
+                            <td><span class="event" id="d3" draggable="true">Order D3</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><button id='addRow'>Add Row</button></p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(function() {
+
+            var List = [];
+            let SelectList = [];
+
+            $('.event').on("mousedown mouseup", function(event) {
+                event.ctrlKey = true;
+                $(this).toggleClass("touched");
+                getIndex();
+            });
+            $('.event').on("click", function(event) {
+                event.ctrlKey = true;
+                 $(this).toggleClass("selected");
+                //$(this).addClass("touched");
+                var dt = event.originalEvent.dataTransfer;
+                
+                var v = $(this).attr('id');
+
+                var a = v.slice(0,1);
+                var b=v.slice(1);
+                var single = { a, b };
+                SelectList.push(single);
+                console.log(SelectList);
+                getIndex();
+            });
+
+            initDragAndDrop();
+            $('#addRow').on('click', function() {
+                $('#targetTable > tbody:last-child').append('<tr><td></td><td></td><td></td></tr>');
+                clearDragAndDrop();
+                initDragAndDrop();
+            });
+        });
+
+        function clearDragAndDrop() {
+            $('.event').off();
+            $('table td').off('dragenter dragover drop');
+        }
+
+        //function EditRecordForEditDemo(element) {
+        //    var rowJavascript = element.parentNode.parentNode;
+        //    var rowjQuery = $(element).closest("tr");
+        //    alert("JavaScript Row Index : " + (rowJavascript.rowIndex - 1) + "\njQuery Row Index : " + (rowjQuery[0].rowIndex - 1));
+        //}
+
+
+        function initDragAndDrop() {
+
+            let i = 0;
+            $('.event').on('dragstart', function(event) {
+                var dt = event.originalEvent.dataTransfer;
+                dt.setData('Text', $(this).attr('id'));
+                i = 0;
+            });
+
+            $('table td').on('dragenter dragover', function(event) {
+                event.preventDefault();
+                var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+            });
+            
+            $('table td').on('drag drop', function(event) {
+                event.preventDefault();
+                if (i===0) 
+                {
+                    if (event.type === 'drag') {
+                    var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                        var rowIndex = this.parentElement.rowIndex;
+                        var cellIndex= this.cellIndex;
+                        console.log("Transfer--Row:"+rowIndex+" Cell:"+cellIndex);
+                        i = 1;
+                    }
+                }
+
+                if (event.type === 'drop') {
+                    
+                    var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                    if (event.target.id === '') {
+                        de = $('#' + data).detach();
+                        de.appendTo($(this));
+                        $('#' + data).addClass("selected");
+
+                        var rowIndex = this.parentElement.rowIndex;
+                        var cellIndex= this.cellIndex;
+                        console.log("Target--Row:"+rowIndex+" Cell:"+cellIndex);
+                    }
+                    else {
+                        alert(data);
+                        $('#' + data).removeClass("touched");
+                        
+                    }
+                }
+            });
+        }
+
+        function getIndex(){
+            var table = document.getElementById("targetTable"),rIndex,cIndex;
+            
+            // table rows
+            for(var i = 1; i < table.rows.length; i++)
+            {
+                // row cells
+                for(var j = 0; j < table.rows[i].cells.length; j++)
+                {
+                    table.rows[i].cells[j].onclick = function()
+                    {
+                        rIndex = this.parentElement.rowIndex;
+                        cIndex = this.cellIndex+1;
+                        console.log("Row : "+rIndex+" , Cell : "+cIndex);
+                    };
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+
+        //$(document).ready(function(){
+        //         $(".droppable").droppable({
+        //            drop: function(event, ui) {
+        //                var $list = $(this);
+        //                $helper = ui.helper;
+        //                $($helper).removeClass("selected");
+        //                var $selected = $(".selected");
+        //                if($selected.length > 1){
+        //                    moveSelected($list,$selected);
+        //                }else{
+        //                    moveItem(ui.draggable,$list);
+        //                }
+        //            }, tolerance: "touch"
+        //         });
+
+        //         $(".draggable").draggable({
+        //            revert: "invalid",
+        //            helper: "clone",
+        //            cursor: "move",
+        //            drag: function(event,ui){
+        //                var $helper = ui.helper;
+        //                $($helper).removeClass("selected");
+        //                var $selected = $(".selected");
+        //                if($selected.length > 1){
+        //                    $($helper).html($selected.length + " items");
+        //                }
+        //            }
+        //         });
+
+        //        function moveSelected($list,$selected){
+        //            $($selected).each(function(){
+        //                $(this).fadeOut(function(){
+        //                    $(this).appendTo($list).removeClass("selected").fadeIn();
+        //                });
+        //            });
+        //        }
+
+        //        function moveItem( $item,$list ) {
+        //            $item.fadeOut(function() {
+        //                $item.find(".item").remove();
+        //                $item.appendTo( $list ).fadeIn();
+        //            });
+        //        }
+
+        //        $(".item").click(function(){
+        //            $(this).toggleClass("selected");
+        //        });
+
+        //    });
+    </script>
+}

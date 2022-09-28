@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "DragDropA";
+}
+
+<style type="text/css">
+    table th,
+    table td {
+      height: 30px;
+      width: 200px;
+    }
+
+  /*#draggable { width: 100px; height: 100px; padding: 0.5em; float: left; margin: 10px 10px 10px 0; }
+  #droppable { width: 150px; height: 150px; padding: 0.5em; float: left; margin: 10px; }*/
+</style>
+
+<div class="box">
+    <div class="box-body">
+        <div class="row">
+
+
+
+            </div>
+        </div>
+    </div>
+
+@section scripts {
+<script type="text/javascript">
+$(function() {
+    $("#draggable").draggable();
+});
+</script>
+}
