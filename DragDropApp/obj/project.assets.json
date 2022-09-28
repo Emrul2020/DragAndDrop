@@ -10282,11 +10282,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Service\\DragDropApp\\DragDropApp\\DragDropApp.csproj",
+      "projectUniqueName": "D:\\Service\\DragAndDrop\\DragDropApp\\DragDropApp.csproj",
       "projectName": "DragDropApp",
-      "projectPath": "D:\\Service\\DragDropApp\\DragDropApp\\DragDropApp.csproj",
+      "projectPath": "D:\\Service\\DragAndDrop\\DragDropApp\\DragDropApp.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\Service\\DragDropApp\\DragDropApp\\obj\\",
+      "outputPath": "D:\\Service\\DragAndDrop\\DragDropApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

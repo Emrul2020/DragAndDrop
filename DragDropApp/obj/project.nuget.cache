@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qo8j/8iIVNRhVKWn4njcwUnhGMj914YMONYiuoFmEuzoNwfMdgFwCI4CLccZStj2BtSvf7fOcMhPU/2mkUFOHQ==",
+  "dgSpecHash": "pd+BrOUifcvTC9tUgWg+j9O0E7H8xoIoB6g3e9AvWPT1ceaY9OusqeqX+etPqa0HqG+kZns3FMEvxprtVwb0pw==",
   "success": true,
-  "projectFilePath": "D:\\Service\\DragDropApp\\DragDropApp\\DragDropApp.csproj",
+  "projectFilePath": "D:\\Service\\DragAndDrop\\DragDropApp\\DragDropApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\humanizer.core\\2.2.0\\humanizer.core.2.2.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
