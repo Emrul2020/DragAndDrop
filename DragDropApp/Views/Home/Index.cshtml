@@ -54,7 +54,7 @@
 
       .touched{ background-color: #DFFF00; color: white;}
     .selected { background-color: #DE3163; color: white; }
-
+    .moved { background-color:red;color:white;}
 
 
       table span {
@@ -71,9 +71,6 @@
         z-index: 1;
       }
 
-      .event{
-          draggable="true"
-      }
 </style>
 
 
@@ -131,10 +128,11 @@
 
 @section scripts {
     <script type="text/javascript">
+        var SelectList = [];
         $(function() {
 
             var List = [];
-            let SelectList = [];
+            
 
             $('.event').on("mousedown mouseup", function(event) {
                 event.ctrlKey = true;
@@ -142,40 +140,42 @@
                 getIndex();
             });
             $('.event').on("click", function(event) {
-                event.ctrlKey = true;
-                 $(this).toggleClass("selected");
-                //$(this).addClass("touched");
-                var dt = event.originalEvent.dataTransfer;
-                
-                let IDs = $(this).attr('id');
+                event.preventDefault();
 
-
-
+                var IDs = $(this).attr('id');
                 let blockID = IDs.slice(0,1);
-                let serialID = IDs.slice(1);
+                let serialID = Number(IDs.slice(1));
 
-                let Item = SelectList.find(x => x.BlockID === blockID && x.SerialID === serialID);
-                console.log(Item);
-                if (Item) {
+                if (SelectList.length > 0) {
+                    let HasBlock = SelectList.every(x => x.BlockID == blockID);
+                    if (HasBlock) {
+                        event.ctrlKey = true;
+                        $(this).toggleClass("selected");
+                        //$(this).addClass("touched");
+                        var dt = event.originalEvent.dataTransfer;
 
+                        let ItemIndex = SelectList.findIndex(x => x.BlockID === blockID && x.SerialID === serialID);
+                        console.log(ItemIndex);
+                        if (ItemIndex >= 0) {
+                            // remove object
+                            SelectList.splice(ItemIndex, 1);
+                        }
+                        else {
+                            let single = { BlockID: blockID, SerialID: serialID,ElementID:IDs };
+                            SelectList.push(single);
+                        }
+                    }
                 }
                 else {
-                    let single = { BlockID: blockID, SerialID: serialID };
-                        SelectList.push(single);
-                }
-                for (const x of SelectList) {
-                    if (x.BlockID === blockID && x.SerialID === serialID) {
-                        
-                    }
-                    else {
-                        let single = { BlockID: blockID, SerialID: serialID };
-                        SelectList.push(single);
-                    }
+                    event.ctrlKey = true;
+                    $(this).toggleClass("selected");
+                        //$(this).addClass("touched");
+                    var dt = event.originalEvent.dataTransfer;
+
+                    let single1 = { BlockID: blockID, SerialID: serialID,ElementID:IDs };
+                    SelectList.push(single1);
                 }
 
-
-                
-                
                 console.log(SelectList);
                 getIndex();
             });
@@ -192,13 +192,6 @@
             $('.event').off();
             $('table td').off('dragenter dragover drop');
         }
-
-        //function EditRecordForEditDemo(element) {
-        //    var rowJavascript = element.parentNode.parentNode;
-        //    var rowjQuery = $(element).closest("tr");
-        //    alert("JavaScript Row Index : " + (rowJavascript.rowIndex - 1) + "\njQuery Row Index : " + (rowjQuery[0].rowIndex - 1));
-        //}
-
 
         function initDragAndDrop() {
 
@@ -222,32 +215,78 @@
                     var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
                         var rowIndex = this.parentElement.rowIndex;
                         var cellIndex= this.cellIndex;
-                        console.log("Transfer--Row:"+rowIndex+" Cell:"+cellIndex);
+                        
                         i = 1;
                     }
                 }
 
                 if (event.type === 'drop') {
                     
-                    var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
-                    if (event.target.id === '') {
-                        de = $('#' + data).detach();
-                        de.appendTo($(this));
-                        $('#' + data).addClass("selected");
+                    let dropRowIndex = this.parentElement.rowIndex;
+                    let dropCellIndex= this.cellIndex;
+                    console.log("Drop Index: Row:"+dropRowIndex+" Cell:"+dropCellIndex);
 
-                        var rowIndex = this.parentElement.rowIndex;
-                        var cellIndex= this.cellIndex;
-                        console.log("Target--Row:"+rowIndex+" Cell:"+cellIndex);
+                    let 
+
+                    if (SelectList.length>0)
+                    {
+
+                        for (const x of SelectList) { 
+                            console.log("Drop Item:"+ x.ElementID);
+
+                            let td = $('table tbody tr').eq(dropRowIndex).find('td').eq(dropCellIndex);
+                            td.appendTo( text(td.text() + data);
+
+
+                            if (event.target.id === '') {
+                                de = $('#' + x.ElementID).detach();
+                                de.appendTo($(this));
+                                $('#' + x.ElementID).addClass("moved");
+
+                                
+
+
+                                //var rowIndex = this.parentElement.rowIndex;
+                                //var cellIndex = this.cellIndex;
+                                //console.log("Target--Row:" + rowIndex + " Cell:" + cellIndex);
+                            }
+                            else {
+                                alert(x.ElementID);
+                                $('#' + x.ElementID).removeClass("touched");
+
+                            }
+                        }
+
                     }
-                    else {
-                        alert(data);
-                        $('#' + data).removeClass("touched");
+
+
+                    //var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                    //if (event.target.id === '') {
+                    //    de = $('#' + data).detach();
+                    //    de.appendTo($(this));
+                    //    $('#' + data).addClass("moved");
+
+                    //    var rowIndex = this.parentElement.rowIndex;
+                    //    var cellIndex= this.cellIndex;
+                    //    console.log("Target--Row:"+rowIndex+" Cell:"+cellIndex);
+                    //}
+                    //else {
+                    //    alert(data);
+                    //    $('#' + data).removeClass("touched");
                         
-                    }
+                    //}
                 }
             });
-        }
 
+                    
+        }
+        function moveSelected($list,$selected){
+            $($selected).each(function() {
+                $(this).fadeOut(function() {
+                    $(this).appendTo($list).removeClass("selected").fadeIn();
+                });
+            });
+        }
         function getIndex(){
             var table = document.getElementById("targetTable"),rIndex,cIndex;
             
