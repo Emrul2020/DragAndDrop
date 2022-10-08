@@ -100,13 +100,13 @@
                         <tr>
                             <th><label id="B1">LineB</label></th>
                             <td><span class="event" id="b1" draggable="true">Order B1</span></td>
-                            <td></td>
-                            <td></td>
+                            <td id="event1"></td>
+                            <td id="event2"></td>
                         </tr>
                         <tr>
                             <th><label id="C1">LineC</label></th>
-                            <td></td>
-                            <td></td>
+                            <td id="event3"></td>
+                            <td id="event4"></td>
                             <td><span class="event" id="c1" draggable="true">Order C1</span></td>
                         </tr>
                         <tr>
@@ -139,8 +139,15 @@
                 $(this).toggleClass("touched");
                 getIndex();
             });
+
             $('.event').on("click", function(event) {
                 event.preventDefault();
+
+                let dropRowIndex = this.parentElement.rowIndex;
+                    let dropCellIndex= this.cellIndex;
+                 //let td = $('table tbody tr').eq(dropRowIndex).find('td').eq(dropCellIndex);
+                //console.log(td);
+
 
                 var IDs = $(this).attr('id');
                 let blockID = IDs.slice(0,1);
@@ -155,7 +162,7 @@
                         var dt = event.originalEvent.dataTransfer;
 
                         let ItemIndex = SelectList.findIndex(x => x.BlockID === blockID && x.SerialID === serialID);
-                        console.log(ItemIndex);
+                        //console.log(ItemIndex);
                         if (ItemIndex >= 0) {
                             // remove object
                             SelectList.splice(ItemIndex, 1);
@@ -223,19 +230,26 @@
                 if (event.type === 'drop') {
                     
                     let dropRowIndex = this.parentElement.rowIndex;
-                    let dropCellIndex= this.cellIndex;
-                    console.log("Drop Index: Row:"+dropRowIndex+" Cell:"+dropCellIndex);
+                    let dropCellIndex= this.cellIndex+1;
+                    console.log("Drop Index-Position: Row:"+dropRowIndex+" Cell:"+dropCellIndex);
 
-                    let 
+                   //var currentRow=$(this).closest("tr").find(('#' + data).find("td:eq("+dropCellIndex+")").html(); 
+                   // let td = $('table tbody tr').eq(dropRowIndex).find('td').eq(dropCellIndex).html();
+                   var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                     
+                     console.log("This: "+event.target.id);
 
                     if (SelectList.length>0)
                     {
 
-                        for (const x of SelectList) { 
-                            console.log("Drop Item:"+ x.ElementID);
+                        for (let x of SelectList) { 
+                            
 
-                            let td = $('table tbody tr').eq(dropRowIndex).find('td').eq(dropCellIndex);
-                            td.appendTo( text(td.text() + data);
+                            
+
+                           //let td = $('table tbody tr').eq(dropRowIndex).find('td').eq(dropCellIndex).attr("id");
+                           //console.log(td.target.id);
+
 
 
                             if (event.target.id === '') {
@@ -276,10 +290,9 @@
                         
                     //}
                 }
-            });
-
-                    
+            });       
         }
+
         function moveSelected($list,$selected){
             $($selected).each(function() {
                 $(this).fadeOut(function() {
@@ -299,63 +312,64 @@
                     table.rows[i].cells[j].onclick = function()
                     {
                         rIndex = this.parentElement.rowIndex;
-                        cIndex = this.cellIndex+1;
+                        cIndex = this.cellIndex;
                         console.log("Row : "+rIndex+" , Cell : "+cIndex);
                     };
                 }
             }
         }
     </script>
+
     <script type="text/javascript">
 
-        //$(document).ready(function(){
-        //         $(".droppable").droppable({
-        //            drop: function(event, ui) {
-        //                var $list = $(this);
-        //                $helper = ui.helper;
-        //                $($helper).removeClass("selected");
-        //                var $selected = $(".selected");
-        //                if($selected.length > 1){
-        //                    moveSelected($list,$selected);
-        //                }else{
-        //                    moveItem(ui.draggable,$list);
-        //                }
-        //            }, tolerance: "touch"
-        //         });
+$(document).ready(function() {
+    //         $(".droppable").droppable({
+    //            drop: function(event, ui) {
+    //                var $list = $(this);
+    //                $helper = ui.helper;
+    //                $($helper).removeClass("selected");
+    //                var $selected = $(".selected");
+    //                if($selected.length > 1){
+    //                    moveSelected($list,$selected);
+    //                }else{
+    //                    moveItem(ui.draggable,$list);
+    //                }
+    //            }, tolerance: "touch"
+    //         });
 
-        //         $(".draggable").draggable({
-        //            revert: "invalid",
-        //            helper: "clone",
-        //            cursor: "move",
-        //            drag: function(event,ui){
-        //                var $helper = ui.helper;
-        //                $($helper).removeClass("selected");
-        //                var $selected = $(".selected");
-        //                if($selected.length > 1){
-        //                    $($helper).html($selected.length + " items");
-        //                }
-        //            }
-        //         });
+    //         $(".draggable").draggable({
+    //            revert: "invalid",
+    //            helper: "clone",
+    //            cursor: "move",
+    //            drag: function(event,ui){
+    //                var $helper = ui.helper;
+    //                $($helper).removeClass("selected");
+    //                var $selected = $(".selected");
+    //                if($selected.length > 1){
+    //                    $($helper).html($selected.length + " items");
+    //                }
+    //            }
+    //         });
 
-        //        function moveSelected($list,$selected){
-        //            $($selected).each(function(){
-        //                $(this).fadeOut(function(){
-        //                    $(this).appendTo($list).removeClass("selected").fadeIn();
-        //                });
-        //            });
-        //        }
+    //        function moveSelected($list,$selected){
+    //            $($selected).each(function(){
+    //                $(this).fadeOut(function(){
+    //                    $(this).appendTo($list).removeClass("selected").fadeIn();
+    //                });
+    //            });
+    //        }
 
-        //        function moveItem( $item,$list ) {
-        //            $item.fadeOut(function() {
-        //                $item.find(".item").remove();
-        //                $item.appendTo( $list ).fadeIn();
-        //            });
-        //        }
+    //        function moveItem( $item,$list ) {
+    //            $item.fadeOut(function() {
+    //                $item.find(".item").remove();
+    //                $item.appendTo( $list ).fadeIn();
+    //            });
+    //        }
 
-        //        $(".item").click(function(){
-        //            $(this).toggleClass("selected");
-        //        });
+    //        $(".item").click(function(){
+    //            $(this).toggleClass("selected");
+    //        });
 
-        //    });
+});
     </script>
 }
