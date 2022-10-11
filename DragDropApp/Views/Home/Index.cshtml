@@ -3,79 +3,86 @@
 }
 
 <style type="text/css">
-      /*.item {
-          width: 100%;
-          height: 40px;
-          background-color: white;
-          border: 1px solid black;
-          color: black;
-          position: relative;
-          cursor: move;
-          background-color: $dedede;
-      }
+    /*.item {
+              width: 100%;
+              height: 40px;
+              background-color: white;
+              border: 1px solid black;
+              color: black;
+              position: relative;
+              cursor: move;
+              background-color: $dedede;
+          }
 
-      .selected {
-          background-color: #ff9900;
-      }*/
-      /*.ui-droppable{
-          display: inline-block;
-      }
-      .list {
-          display: -webkit-inline-box;
-          height: auto;
-          width: 20%;
-          border: 1px solid yellow;
-          position: absolute;
-          top: 20px;
-          color: white;
-          z-index: 1;
-          margin-bottom:10px;
-      }
+          .selected {
+              background-color: #ff9900;
+          }*/
+    /*.ui-droppable{
+              display: inline-block;
+          }
+          .list {
+              display: -webkit-inline-box;
+              height: auto;
+              width: 20%;
+              border: 1px solid yellow;
+              position: absolute;
+              top: 20px;
+              color: white;
+              z-index: 1;
+              margin-bottom:10px;
+          }
 
 
-      #list1 {
-          height:40px;
-          width:50px;
-          padding-bottom:20px;
-      }
+          #list1 {
+              height:40px;
+              width:50px;
+              padding-bottom:20px;
+          }
 
-      .list-pad{
-          margin-top:20px;
-          padding-bottom:50px;
-          width:auto;
-          height:50px;
-      }*/
+          .list-pad{
+              margin-top:20px;
+              padding-bottom:50px;
+              width:auto;
+              height:50px;
+          }*/
 
-      table tr td {
-        padding:0px !important;
+    table tr td {
+        padding: 0px !important;
         height: auto;
         width: auto;
-      }
+    }
 
-      .touched{ background-color: #DFFF00; color: white;}
-    .selected { background-color: #DE3163; color: white; }
-    .moved { background-color:red;color:white;}
+    .touched {
+        background-color: #DFFF00;
+        color: white;
+    }
+
+    .selected {
+        background-color: #DE3163;
+        color: white;
+    }
+
+    .moved {
+        background-color: red;
+        color: white;
+    }
 
 
-      table span {
+    table span {
         display: block;
         background-color: green;
-        color:white;
+        color: white;
         height: 20%;
         width: 100%;
         text-align: center;
         font-weight: bold;
-        padding:0.5rem;
-        border:0.1px solid;
+        padding: 0.5rem;
+        border: 0.1px solid;
         cursor: move;
         z-index: 1;
-      }
+    }
 
 </style>
-
-
-
-
 
 <div class="box">
     <div class="box-body">
@@ -125,11 +132,13 @@
 
 @section scripts {
     <script type="text/javascript">
-        var SelectList = [];
+
+       var SelectList=[];
+
         $(function() {
 
             var List = [];
-
+             
 
             $('.event').on("mousedown mouseup", function(event) {
                 event.ctrlKey = true;
@@ -147,6 +156,7 @@
                 let blockID = IDs.slice(0, 1);
                 let serialID = Number(IDs.slice(1));
 
+                console.log(SelectList);
                 if (SelectList.length > 0) {
                     let HasBlock = SelectList.every(x => x.BlockID == blockID);
                     if (HasBlock) {
@@ -162,7 +172,7 @@
                             SelectList.splice(ItemIndex, 1);
                         }
                         else {
-                            let single = { BlockID: blockID, SerialID: serialID, ElementID: IDs };
+                            let single = { BlockID: blockID, SerialID: serialID, ElementID: IDs, IsMoved:false };
                             SelectList.push(single);
                         }
                     }
@@ -173,20 +183,16 @@
                     //$(this).addClass("touched");
                     var dt = event.originalEvent.dataTransfer;
 
-                    let single1 = { BlockID: blockID, SerialID: serialID, ElementID: IDs };
+                    let single1 = { BlockID: blockID, SerialID: serialID, ElementID: IDs, IsMoved: false };
                     SelectList.push(single1);
                 }
 
-                //console.log(SelectList);
+                
                 //getIndex();
             });
 
             initDragAndDrop();
-            $('#addRow').on('click', function() {
-                $('#targetTable > tbody:last-child').append('<tr><td></td><td></td><td></td></tr>');
-                clearDragAndDrop();
-                initDragAndDrop();
-            });
+            
         });
 
         function clearDragAndDrop() {
@@ -224,6 +230,8 @@
 
                     let dropRowIndex = this.parentElement.rowIndex;
                     let dropCellIndex = this.cellIndex;
+                    let dropFirstCell = this.cellIndex;
+
                     console.log("Drop Index: Row:" + dropRowIndex + " Cell:" + dropCellIndex);
 
                     //var vID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
@@ -231,69 +239,128 @@
                     //alert("TargetID= " + event.target.id);
                     //var value = document.getElementById(event.target.id).value;
                     //alert("ABC TD: " + value);
-
+                   
+                    
+                    
                     if (SelectList.length > 0) {
 
+                        let lenth = document.getElementById("targetTable").getElementsByTagName("tr")[i].getElementsByTagName("td").length;
+                        console.log(lenth);
 
+                        let dropRightCell = this.cellIndex;
 
                         for (let x of SelectList) {
 
-                            var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
-                            var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                            console.log(dropPlaceValue)
+                            if (dropRightCell <= lenth) {
+                                var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropRightCell].id
+                                var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
+                                console.log(dropPlaceValue)
                             if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
-
                                 //Place & Drop
-
                                 de = $('#' + x.ElementID).detach();
-                                //de.appendTo($(this));
                                 de.appendTo($('#' + dropPlaceID))
                                 $('#' + x.ElementID).addClass("moved");
 
-                                //------------
+                                x.IsMoved = true;
 
+                            }
+                            else {
+                                break;
+                               
+
+                                //alert(dropPlaceValue);
                                 //let ItemIndex = SelectList.findIndex(x => x.ElementID === x.ElementID);
-                                //if (ItemIndex >= 0) {
+                                //if (ItemIndex > 0) {
                                 //    // remove object
                                 //    SelectList.splice(ItemIndex, 1);
                                 //}
+                                //$('#' + x.ElementID).removeClass("touched");
+                            }
+
+                            dropRightCell += 1;
+                            console.log("Drop Right-Position: Row:" + dropRowIndex + " Cell:" + dropRightCell);
                             }
                             else {
+                                break;
+                            }
 
-                                alert(dropPlaceValue);
-                                let ItemIndex = SelectList.findIndex(x => x.ElementID === x.ElementID);
+                            
+                        }
+
+                        let dropLeftCell = this.cellIndex - 1;
+
+                        for (let y of SelectList.filter(x=>x.IsMoved==false)) {
+
+
+                            var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropLeftCell].id
+                            var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
+                            console.log(dropPlaceValue)
+
+                            if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                //Place & Drop
+                                de = $('#' + y.ElementID).detach();
+                                de.appendTo($('#' + dropPlaceID))
+                                $('#' + y.ElementID).addClass("moved");
+                            }
+                            else {
+                                $('#' + y.ElementID).removeClass("selected");
+                                break;
+                            }
+
+                            dropLeftCell += 1;
+                            console.log("Drop Left-Position: Row:" + dropRowIndex + " Cell:" + dropLeftCell);
+                        }
+
+                        for (let z of SelectList.filter(x => x.IsMoved == false)) {
+                            let ItemIndex = SelectList.findIndex(x => x.ElementID === z.ElementID);
                                 if (ItemIndex > 0) {
                                     // remove object
                                     SelectList.splice(ItemIndex, 1);
                                 }
-
-
-                                $('#' + x.ElementID).removeClass("touched");
-                            }
-
-                            dropCellIndex += 1;
-                            console.log("Drop Next-Position: Row:" + dropRowIndex + " Cell:" + dropCellIndex);
                         }
+                        
                         SelectList = [];
                         console.log(SelectList);
                     }
+                    else {
+
+                        let dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
+                        let dropPlaceValue = document.getElementById(dropPlaceID).textContent;
+                        console.log(dropPlaceValue)
+
+                        var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                        if (dropPlaceValue === undefined) {
+                            de = $('#' + data).detach();
+                            de.appendTo($(this));
+                            $('#' + data).addClass("moved");
+                        }
+                        else {
+                            alert(data);
+                            $('#' + data).removeClass("touched");
+
+                        }
 
 
+                    }
+
+                    //-----------------------
                     //var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
-                    //if (event.target.id === '') {
-                    //    de = $('#' + data).detach();
-                    //    de.appendTo($(this));
-                    //    $('#' + data).addClass("moved");
+                    //    if (event.target.id === undefined) {
+                    //        de = $('#' + data).detach();
+                    //        de.appendTo($(this));
+                    //        $('#' + data).addClass("moved");
 
-                    //    var rowIndex = this.parentElement.rowIndex;
-                    //    var cellIndex= this.cellIndex;
-                    //    console.log("Target--Row:"+rowIndex+" Cell:"+cellIndex);
-                    //}
-                    //else {
-                    //    alert(data);
-                    //    $('#' + data).removeClass("touched");
+                    //        var rowIndex = this.parentElement.rowIndex;
+                    //        var cellIndex = this.cellIndex;
+                    //        console.log("Target--Row:" + rowIndex + " Cell:" + cellIndex);
+                    //    }
+                    //    else {
+                    //        alert(data);
+                    //        $('#' + data).removeClass("touched");
 
-                    //}
+                    //    }
+                    //-----------------------
+
                 }
             });
         }
