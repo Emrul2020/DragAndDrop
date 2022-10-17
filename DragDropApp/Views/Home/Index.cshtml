@@ -249,8 +249,6 @@
                     //var value = document.getElementById(event.target.id).value;
                     //alert("ABC TD: " + value);
                    
-                    
-                    
                     if (SelectList.length > 0) {
 
                         let AuthPlace = 0;
@@ -265,25 +263,26 @@
                                     AuthPlace += 1;
                                     x.IsValid = true;
                                 }
-                                else { break; }
                                 rSidePlace += 1;
                             }
                             else { break; }
                         }
-                        let lSidePlace=this.cellIndex;
-                        for (let y of SelectList.filter(x => x.IsValid == false)) {
 
-                            var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[lSidePlace].id
-                            var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                            console.log(dropPlaceValue)
-
-                            if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
-                                AuthPlace += 1;
-                                x.IsValid = true;
+                        let lSidePlace=this.cellIndex-1;
+                        for (let y of SelectList) {
+                            if (y.IsValid=='true')
+                            {
+                                var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[lSidePlace].id
+                                var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
+                            
+                                if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                    AuthPlace += 1;
+                                    y.IsValid = true;
+                                }
                             }
-                            else { break; }
+                            lSidePlace -= 1;
                         }
-
+                        
                         if (AuthPlace == SelectList.length) {
                             let dropRightCell = this.cellIndex;
 
@@ -305,9 +304,7 @@
                                     else {
                                         break;
                                     }
-
                                     dropRightCell += 1;
-                                    console.log("Drop Right-Position: Row:" + dropRowIndex + " Cell:" + dropRightCell);
                                 }
                                 else { break; }
                             }
@@ -318,20 +315,18 @@
 
                                 var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropLeftCell].id
                                 var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                                console.log(dropPlaceValue)
-
+                         
                                 if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
-                                    //Place & Drop
                                     de = $('#' + y.ElementID).detach();
                                     de.appendTo($('#' + dropPlaceID))
                                     $('#' + y.ElementID).addClass("moved");
-                                    $('#' + x.ElementID).removeClass("selected");
+                                    $('#' + y.ElementID).removeClass("selected");
                                     y.IsMoved = true;
                                 }
                                 else { break; }
 
-                                dropLeftCell += 1;
-                                console.log("Drop Left-Position: Row:" + dropRowIndex + " Cell:" + dropLeftCell);
+                                dropLeftCell -= 1;
+                                //console.log("Drop Left-Position: Row:" + dropRowIndex + " Cell:" + dropLeftCell);
                             }
 
                             for (let z of SelectList.filter(x => x.IsMoved == false)) {
@@ -343,17 +338,15 @@
                                     SelectList.splice(ItemIndex, 1);
                                 }
                             }
-
                             SelectList = [];
                         }
-                        
-                        console.log(SelectList);
+                        //console.log(SelectList);
                     }
                     else {
 
                         let dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
                         let dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                        console.log("Drop Data:"+dropPlaceValue)
+                        //console.log("Drop Data:"+dropPlaceValue)
 
                         var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
                         if ((dropPlaceValue === "")||(dropPlaceValue === undefined)) {
@@ -365,10 +358,7 @@
                         else {
                             alert(data);
                             $('#' + data).removeClass("touched");
-
                         }
-
-
                     }
 
                     //-----------------------
