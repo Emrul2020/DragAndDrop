@@ -102,35 +102,62 @@
                     <tbody>
                         <tr>
                             <th id="AA"><label class="event" id="A1">LineA</label></th>
-                            <td id="AB"><span class="event" id="a10000" draggable="true">Order A1</span></td>
-                            <td id="AC"><span class="event" id="a2" draggable="true">Order A2</span></td>
-                            <td id="AD"><span class="event" id="a3" draggable="true">Order A3</span></td>
-                            <td id="AE"><input id="qwe" type="hidden" value="557"/></td>
-                            <td id="AF"><span class="event" id="a4" draggable="true">Order A3</span></td>
+                            <td id="AB"><span class="event" id="10_1_501" draggable="true">Order A1</span></td>
+                            <td id="AC"><span class="event" id="10_2_501" draggable="true">Order A2</span></td>
+                            <td id="AD"><span class="event" id="10_3_501" draggable="true">Order A3</span></td>
+                            <td id="AE">
+                                <input type="hidden" value="2022/09/04"/>
+                                <input type="hidden" value="10"/>
+                            </td>
+                            <td id="AF"><span class="event" id="10_5_510" draggable="true">Order A3</span></td>
                         </tr>
                         <tr>
                             <th id="BA"><label id="B1">LineB</label></th>
-                            <td id="BB"><span class="event" id="b1" draggable="true">Order B1</span></td>
-                            <td id="BC"></td>
-                            <td id="BD"></td>
-                            <td id="BE"></td>
-                            <td id="BF"><span class="event" id="b2" draggable="true">Order B1</span></td>
+                            <td id="BB"><span class="event" id="11_1_202" draggable="true">Order B1</span></td>
+                            <td id="BC">
+                                <input type="hidden" value="2022/09/02"/>
+                                <input type="hidden" value="11"/>
+                            </td>
+                            <td id="BD">
+                                <input type="hidden" value="2022/09/03"/>
+                                <input type="hidden" value="11"/>
+                            </td>
+                            <td id="BE">
+                                <input type="hidden" value="2022/09/04"/>
+                                <input type="hidden" value="11"/>
+                            </td>
+                            <td id="BF"><span class="event" id="11_2_203" draggable="true">Order B1</span></td>
                         </tr>
                         <tr>
                             <th id="CA"><label id="C1">LineC</label></th>
-                            <td id="CB"></td>
-                            <td id="CC"></td>
-                            <td id="CD"><span class="event" id="c1" draggable="true">Order C1</span></td>
-                            <td id="CE"></td>
-                            <td id="CF"><span class="event" id="c2" draggable="true">Order C1</span></td>
+                            <td id="CB">
+                                <input type="hidden" value="2022/09/01"/>
+                                <input type="hidden" value="12"/>
+                            </td>
+                            <td id="CC">
+                                <input type="hidden" value="2022/09/02"/>
+                                <input type="hidden" value="12"/>
+                            </td>
+                            <td id="CD"><span class="event" id="12_1_405" draggable="true">Order C1</span></td>
+                            <td id="CE">
+                                <input type="hidden" value="2022/09/04"/>
+                                <input type="hidden" value="12"/>
+                            </td>
+                            <td id="CF"><span class="event" id="12_2_300" draggable="true">Order C1</span></td>
                         </tr>
                         <tr>
                             <th id="DA"><label id="D1">LineD</label></th>
-                            <td id="DB"><span class="event" id="d1" draggable="true">Order D1</span></td>
-                            <td id="DC"><span class="event" id="d2" draggable="true">Order D2</span></td>
-                            <td id="DD"><span class="event" id="d3" draggable="true">Order D3</span></td>
-                            <td id="DE"></td>
-                            <td id="DF"></td>
+                            <td id="DB"><span class="event" id="13_1_601" draggable="true">Order D1</span></td>
+                            <td id="DC"><span class="event" id="13_2_601" draggable="true">Order D2</span></td>
+                            <td id="DD"><span class="event" id="13_3_601" draggable="true">Order D3</span></td>
+                            <td id="DE">
+                                <input type="hidden" value="2022/09/04"/>
+                                <input type="hidden" value="13"/>
+                            </td>
+                            <td id="DF">
+                                <input type="hidden" value="2022/09/05"/>
+                                <input type="hidden" value="13"/>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,7 +170,7 @@
     <script type="text/javascript">
 
        var SelectList=[];
-
+var PostData = [];
         $(function() {
             var List = [];
             
@@ -160,8 +187,14 @@
                 let dropCellIndex = this.cellIndex;
 
                 var IDs = $(this).attr('id');
-                let blockID = IDs.slice(0, 1);
-                let serialID = Number(IDs.slice(1));
+                let word = IDs.split('_');
+                let blockID = word[0];
+                let serialID = Number(word[1]);
+                let styleID = Number(word[2]);
+
+                //var IDs = $(this).attr('id');
+                //let blockID = IDs.slice(0, 1);
+                //let serialID = Number(IDs.slice(1));
 
                 $(this).removeClass("moved");
                 $(this).toggleClass("selected");
@@ -184,7 +217,7 @@
                             SelectList.splice(ItemIndex, 1);
                         }
                         else {
-                            let single = { BlockID: blockID, SerialID: serialID, ElementID: IDs, IsMoved: false, IsValid: false };
+                            let single = { BlockID: blockID, SerialID: serialID, StyleID: styleID, ElementID: IDs, IsMoved: false, IsValid: false };
                             SelectList.push(single);
                         }
                     }
@@ -193,7 +226,7 @@
                     event.ctrlKey = true;
                     var dt = event.originalEvent.dataTransfer;
 
-                    let single1 = { BlockID: blockID, SerialID: serialID, ElementID: IDs, IsMoved: false, IsValid: false };
+                    let single1 = { BlockID: blockID, SerialID: serialID, StyleID:styleID, ElementID: IDs, IsMoved: false, IsValid: false };
                     SelectList.push(single1);
                 }
 
@@ -241,7 +274,7 @@
                     let dropCellIndex = this.cellIndex;
                     let dropFirstCell = this.cellIndex;
 
-                    console.log("Drop Index: Row:" + dropRowIndex + " Cell:" + dropCellIndex);
+                    //console.log("Drop Index: Row:" + dropRowIndex + " Cell:" + dropCellIndex);
 
                     //var vID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
                     //alert("Next TD: " + vID);
@@ -253,13 +286,15 @@
 
                         let AuthPlace = 0;
                         let lenth = document.getElementById("targetTable").getElementsByTagName("tr")[i].getElementsByTagName("td").length;
-                     
+                        
                         let rSidePlace=this.cellIndex;
                         for (let x of SelectList) { 
                             if (rSidePlace <= lenth) { 
-                                let dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[rSidePlace].id
-                                let dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                                if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                let dropCellID = document.getElementById("targetTable").rows[dropRowIndex].cells[rSidePlace].id;
+                                //let dropPlaceValue = document.getElementById(dropCellID).textContent;
+                                let dropPlaceValue = document.getElementById(dropCellID).getElementsByTagName('span');
+                                //if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                if (dropPlaceValue.length<=0) {
                                     AuthPlace += 1;
                                     x.IsValid = true;
                                 }
@@ -272,10 +307,11 @@
                         for (let y of SelectList) {
                             if (y.IsValid=='true')
                             {
-                                var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[lSidePlace].id
-                                var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                            
-                                if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                let dropCellID = document.getElementById("targetTable").rows[dropRowIndex].cells[lSidePlace].id;
+                                //let dropPlaceValue = document.getElementById(dropCellID).textContent;
+                                let dropPlaceValue = document.getElementById(dropCellID).getElementsByTagName('span');
+                                //if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                if (dropPlaceValue.length<=0) {
                                     AuthPlace += 1;
                                     y.IsValid = true;
                                 }
@@ -289,17 +325,28 @@
                             for (let x of SelectList) {
 
                                 if (dropRightCell <= lenth) {
-                                    var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropRightCell].id
-                                    var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                                    console.log(dropPlaceValue)
-                                    if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                    let dropCellID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropRightCell].id;
+                                    //var dropPlaceValue = document.getElementById(dropCellID).textContent;
+                                    let dropPlaceValue = document.getElementById(dropCellID).getElementsByTagName('span');
+                                    //if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                    if (dropPlaceValue.length<=0) {
                                         //Place & Drop
                                         de = $('#' + x.ElementID).detach();
-                                        de.appendTo($('#' + dropPlaceID))
+                                        de.appendTo($('#' + dropCellID))
                                         $('#' + x.ElementID).addClass("moved");
                                         $('#' + x.ElementID).removeClass("selected");
                                         x.IsMoved = true;
 
+                                        alert("Right:"+x.BlockID+"-"+x.SerialID+"-"+x.StyleID);
+
+                                        var inputs=document.getElementById(dropCellID).getElementsByTagName('input');
+                                        if (inputs.length>0)
+                                        {
+                                            alert(inputs[0].value);
+                                            alert(inputs[1].value);
+                                            let single = { ID: x.StyleID, PlanDate:inputs[0].value , LineID:inputs[1].value };
+                                            PostData.push(single);
+                                        }
                                     }
                                     else {
                                         break;
@@ -313,15 +360,28 @@
 
                             for (let y of SelectList.filter(x => x.IsMoved == false)) {
 
-                                var dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropLeftCell].id
-                                var dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                         
-                                if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                let dropCellID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropLeftCell].id
+                                //let dropPlaceValue = document.getElementById(dropCellID).textContent;
+                                let dropPlaceValue = document.getElementById(dropCellID).getElementsByTagName('span');
+                                //if ((dropPlaceValue === "") || (dropPlaceValue === undefined)) {
+                                if (dropPlaceValue.length<=0) {
                                     de = $('#' + y.ElementID).detach();
-                                    de.appendTo($('#' + dropPlaceID))
+                                    de.appendTo($('#' + dropCellID))
                                     $('#' + y.ElementID).addClass("moved");
                                     $('#' + y.ElementID).removeClass("selected");
                                     y.IsMoved = true;
+
+                                    alert("Left:"+x.BlockID+"-"+x.SerialID+"-"+x.StyleID);
+
+                                        var inputs=document.getElementById(dropCellID).getElementsByTagName('input');
+                                        if (inputs.length>0)
+                                        {
+                                            alert(inputs[0].value);
+                                            alert(inputs[1].value);
+                                            let single = { ID: x.StyleID, PlanDate:inputs[0].value , LineID:inputs[1].value };
+                                            PostData.push(single);
+                                        }
+
                                 }
                                 else { break; }
 
@@ -340,23 +400,44 @@
                             }
                             SelectList = [];
                         }
-                        //console.log(SelectList);
+                        console.log(SelectList);
+                        console.log("Post Data:");
+                        console.log(PostData);
                     }
                     else {
 
-                        let dropPlaceID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id
-                        let dropPlaceValue = document.getElementById(dropPlaceID).textContent;
-                        //console.log("Drop Data:"+dropPlaceValue)
+                        let dropCellID = document.getElementById("targetTable").rows[dropRowIndex].cells[dropCellIndex].id;
+                        console.log("Drop Cell ID:"+dropCellID)
+                        //let dropPlaceValue = document.getElementById(dropCellID).textContent;
+                        let dropPlaceValue = document.getElementById(dropCellID).getElementsByTagName('span');
+                        if (dropPlaceValue.length<=0) {
 
-                        var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
-                        if ((dropPlaceValue === "")||(dropPlaceValue === undefined)) {
-                            de = $('#' + data).detach();
-                            de.appendTo($(this));
-                            $('#' + data).addClass("moved");
-                            $('#' + data).removeClass("touched");
+                            var data = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
+                            if (data != null && data != undefined) {
+                                let word = data.split('_');
+                                let blockID = word[0];
+                                let serialID = Number(word[1]);
+                                let styleID = Number(word[2]);
+                                console.log(styleID);
+
+                                var inputs=document.getElementById(dropCellID).getElementsByTagName('input');
+                                if (inputs.length > 0) {
+                                    alert(inputs[0].value);
+                                    alert(inputs[1].value);
+                                    let single = { ID: styleID, PlanDate: inputs[0].value, LineID: inputs[1].value };
+                                    PostData.push(single);
+                                    alert("Single:"+blockID+"-"+serialID+"-"+styleID);
+                                }
+
+                                de = $('#' + data).detach();
+                                de.appendTo($(this));
+                                $('#' + data).addClass("moved");
+                                $('#' + data).removeClass("touched");
+                            }
+                            console.log("Post Data:");
+                            console.log(PostData);
                         }
                         else {
-                            alert(data);
                             $('#' + data).removeClass("touched");
                         }
                     }
